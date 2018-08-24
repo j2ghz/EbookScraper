@@ -31,3 +31,10 @@ module Scraper =
         |> List.map (fun n -> {url = n.AttributeValue("href"); name=n.InnerText()})
 
     let scrape' selector documents = List.collect (scrape selector) documents
+
+    let rec scrape'' selectors documents =
+        match selectors with
+        | [selector] -> scrape' selector documents |> List.fold (fun state link -> state + link.name) ""
+        | selector::tail -> scrape' selector documents |> load' |> scrape'' tail
+        | [] -> ""
+
