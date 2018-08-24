@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "EbookScraper": {
+      "commandName": "Project",
+      "commandLineArgs": "\"http://moonbunnycafe.com/demon-noble-girl-story-of-a-careless-demon/\" \".entry-content a[href*=-chapter-]\" \".entry-content\""
+    }
+  }
+}

@@ -30,4 +30,4 @@ module Scraper =
         document.CssSelect(selector)
         |> List.map (fun n -> {url = n.AttributeValue("href"); name=n.InnerText()})
 
-    let scrape' selector documents = List.collect (scrape selector) document
+    let scrape' selector documents = List.collect (scrape selector) documents
