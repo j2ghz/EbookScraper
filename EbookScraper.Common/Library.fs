@@ -26,8 +26,14 @@ module Scraper =
     let load' links =
         List.map load links
 
+    let extractText (node:HtmlNode) =
+        {
+            url = node.AttributeValue("href");
+            name = node.Name();
+        }
+
     let scrape selector (document:HtmlDocument) =
         document.CssSelect(selector)
-        |> List.map (fun n -> {url = n.AttributeValue("href"); name=n.InnerText()})
+        |> List.map extractText
 
     let scrape' selector documents = List.collect (scrape selector) documents
