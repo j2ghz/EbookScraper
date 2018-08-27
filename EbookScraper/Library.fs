@@ -13,10 +13,9 @@ module Scraper =
     | Content of Selector
 
     type Output =
+    | Link of Url * string
     | Page of HtmlDocument
-    | ConcatenatedContent of string
-
-    type Link = {url:string; name:string}
+    | ConcatContent of string
 
     let toProcessors argv =
         Root (List.head argv)::(argv|> List.tail|> List.rev |> List.tail |> List.rev |> List.map (fun str -> Index str) |> List.append [Content (List.last argv)] )
@@ -44,3 +43,14 @@ module Scraper =
         | selector::tail -> scrape' selector documents |> load' |> scrape'' tail
         | [] -> ""
 
+    let getUrlorText (n:HtmlNode) =
+        if n.AttributeValue("href") <> "" then
+            Link (n.AttributeValue("href"), n.InnerText())
+        else
+            ConcatContent (n.InnerText())
+
+    let rec scrape''' selectors o =
+        match o with
+        | Link (url,name) -> scrape''' selectors (Page (HtmlDocument.Load url))
+        | Page page -> page.CssSelect(List.head selectors) |> List.map getUrlorText |> List.collect (scrape''' (List.tail selectors))
+        | ConcatContent s -> [s]
